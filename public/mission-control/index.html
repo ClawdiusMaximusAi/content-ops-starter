@@ -1,16 +1,31 @@
 <!doctype html>
 <html>
 <head><meta charset="utf-8"><title>Mission Control</title></head>
-<body>
+<body style="font-family:system-ui,Arial,Helvetica,sans-serif;display:flex;align-items:center;justify-content:center;height:100vh;margin:0;">
+  <div style="text-align:center;max-width:640px;padding:24px;">
+    <h1>Mission Control — Private</h1>
+    <p>This area is invite-only. Click the button below to sign in.</p>
+    <button id="sign-in" style="padding:12px 20px;font-size:16px;border-radius:6px;cursor:pointer;">Sign in with Netlify Identity</button>
+    <p id="status" style="margin-top:16px;color:#666"></p>
+  </div>
 <script src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
 <script>
-  if(window.netlifyIdentity){
-    netlifyIdentity.init();
-    netlifyIdentity.open('login');
-    netlifyIdentity.on('login', function(){ location.reload(); });
-  } else {
-    document.body.innerHTML = '<p>Loading identity...</p>';
-  }
+  const btn = document.getElementById('sign-in');
+  const status = document.getElementById('status');
+  btn.addEventListener('click', ()=>{
+    if(window.netlifyIdentity){
+      try{
+        netlifyIdentity.init();
+        netlifyIdentity.open('login');
+        netlifyIdentity.on('login', ()=>{ status.textContent = 'Signed in — reloading...'; setTimeout(()=>location.reload(),500) });
+      }catch(e){
+        status.textContent = 'Identity failed to initialize: '+e.message;
+        console.error(e);
+      }
+    }else{
+      status.textContent = 'Identity script not loaded. Please check network or try a different browser.';
+    }
+  });
 </script>
 </body>
 </html>
